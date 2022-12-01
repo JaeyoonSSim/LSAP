@@ -212,10 +212,7 @@ def load_graph_data(args, features_list, subject_map, model, p):
                     D_inverse_sqrt = torch.linalg.inv(torch.sqrt(D)) # Get inverse square root degree matrix
                     L_normalized = torch.matmul(torch.matmul(D_inverse_sqrt, L), D_inverse_sqrt) # Get normalized laplacian matrix
                     
-                    if model == 1 and (p == 'h' or p == 'l'):
-                        eigenvalue, eigenvector = torch.empty(L.shape[0]), torch.empty(L.shape)
-                    else:
-                        eigenvalue, eigenvector = eigh(L_normalized) # Get eigenvalues and eigenvectors
+                    eigenvalue, eigenvector = eigh(L_normalized) # Get eigenvalues and eigenvectors
                     
                     if args.use_feature == 1: # If feature is used
                         X = torch.FloatTensor(subject_info[0]).reshape(len(features_list), -1).T # Use ROI feature
