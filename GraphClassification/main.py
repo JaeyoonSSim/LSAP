@@ -105,16 +105,23 @@ def main():
         laplacians = laplacians.to(device)
     
     ### Compute polynomial
-    if args.polynomial == 0: # Chebyshev
-        b = eigenvalues[:,eigenvalues.shape[1]-1] 
-        P_n = compute_Tn(laplacians, args.m_chebyshev, b, device)
-    elif args.polynomial == 1: # Hermite
-        P_n = compute_Hn(laplacians, args.m_hermite, device)
-    elif args.polynomial == 2: # Laguerre
-        P_n = compute_Ln(laplacians, args.m_laguerre, device)
+    if args.model == 'asap':
+        if args.polynomial == 0: # Chebyshev
+            b = eigenvalues[:,eigenvalues.shape[1]-1] 
+            P_n = compute_Tn(laplacians, args.m_chebyshev, b, device)
+        elif args.polynomial == 1: # Hermite
+            P_n = compute_Hn(laplacians, args.m_hermite, device)
+        elif args.polynomial == 2: # Laguerre
+            P_n = compute_Ln(laplacians, args.m_laguerre, device)
+    else:
+        P_n = None
     
-    num_ROI_features = X.shape[1]
-    num_used_features = X.shape[2]
+    if args.model != 'svm':
+        num_ROI_features = X.shape[1]
+        num_used_features = X.shape[2]
+    else:
+        num_ROI_features = None
+        num_used_features = None
 
     for i, idx_pair in enumerate(idx_pairs):
         print("\n")
@@ -123,7 +130,7 @@ def main():
         ### Build data loader
         data_loader_train, data_loader_test = build_data_loader(args, idx_pair, A, X, y, eigenvalues, eigenvectors, laplacians, P_n)
 
-        ### Select the network model to use
+        ### Select the model to use
         model = select_model(args, num_ROI_features, num_used_features, A, y)
         optimizer = select_optimizer(args, model)
         trainer = select_trainer(args, device, model, optimizer, data_loader_train, data_loader_test, A)
@@ -131,18 +138,7 @@ def main():
         
         ### Train and test
         trainer.train()
-        if args.model == 'svm':
-            losses, accuracies, cf_accuracies, cf_precisions, cf_specificities, cf_sensitivities, cf_f1score = trainer.test()
-        elif args.model == 'mlp':
-            losses, accuracies, cf_accuracies, cf_precisions, cf_specificities, cf_sensitivities, cf_f1score = trainer.test(i)
-        elif args.model == 'gcn' or args.model == 'gat' or args.model == 'gdc':
-            losses, accuracies, cf_accuracies, cf_precisions, cf_specificities, cf_sensitivities, cf_f1score = trainer.test(i)
-        elif args.model == 'graphheat':
-            losses, accuracies, cf_accuracies, cf_precisions, cf_specificities, cf_sensitivities, cf_f1score = trainer.test(i)
-        elif args.model == 'exact':
-            losses, accuracies, cf_accuracies, cf_precisions, cf_specificities, cf_sensitivities, cf_f1score, t = trainer.test()
-        elif args.model == 'asap':
-            losses, accuracies, cf_accuracies, cf_precisions, cf_specificities, cf_sensitivities, cf_f1score, t = trainer.test()
+        losses, accuracies, cf_accuracies, cf_precisions, cf_specificities, cf_sensitivities, cf_f1score, t = trainer.test()
 
         avl.append(losses)
         ava.append(accuracies)
@@ -151,8 +147,7 @@ def main():
         avsp.append(cf_specificities)
         avse.append(cf_sensitivities)
         avf1s.append(cf_f1score)
-        if args.model == 'exact' or args.model == 'asap':
-            ts.append(t)
+        ts.append(t)
 
     class_info = y.tolist()
     cnt = Counter(class_info)

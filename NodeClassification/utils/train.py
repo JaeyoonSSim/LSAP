@@ -272,8 +272,8 @@ class GraphHeat_Trainer:
         accuracy_max = 0.0
         
         best_epoch = 0
-        
-        heat_kernel, heat_kernel_grad = compute_heat_kernel(self.eigenvalue, self.eigenvector, self.t, self.args.hk_threshold) # Use heat kernel instead of adjacency matrix
+
+        heat_kernel, heat_kernel_grad = compute_heat_kernel(self.args, self.eigenvalue, self.eigenvector, self.t) # Use heat kernel instead of adjacency matrix
 
         for epoch in range(1, self.args.epochs + 1):
             self.model.train()
@@ -327,7 +327,7 @@ class GraphHeat_Trainer:
     def test(self):
         self.model.eval()
 
-        heat_kernel, heat_kernel_grad = compute_heat_kernel(self.eigenvalue, self.eigenvector, self.t, self.args.hk_threshold) # Use heat kernel instead of adjacency matrix
+        heat_kernel, heat_kernel_grad = compute_heat_kernel(self.args, self.eigenvalue, self.eigenvector, self.t) # Use heat kernel instead of adjacency matrix
 
         # Use heat kernel instead of adjacency matrix
         output = self.model.forward(self.X, heat_kernel) # Shape: (1, # node, # feature), (1, # node, # node) -> (# node, # class)

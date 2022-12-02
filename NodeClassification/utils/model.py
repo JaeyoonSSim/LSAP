@@ -101,7 +101,10 @@ def select_model(args, A, X, y):
     return model
         
 def select_optimizer(args, model):
-    optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+    if args.model != 'svm':
+        optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+    else:
+        optimizer = None
     
     return optimizer
 

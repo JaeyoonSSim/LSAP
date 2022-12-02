@@ -84,12 +84,11 @@ def main():
     optimizer = select_optimizer(args, model)
     eigenvalue, eigenvector, laplacian = compute_eigen_decomposition(A)
     
-    if torch.cuda.is_available():
-        if args.model != 'svm':
-            model = model.to(device)
-            A = A.to(device)
-            X = X.to(device)
-            y = y.to(device)
+    if torch.cuda.is_available() and args.model != 'svm':
+        model = model.to(device)
+        A = A.to(device)
+        X = X.to(device)
+        y = y.to(device)
         
         eigenvalue = eigenvalue.to(device)
         eigenvector = eigenvector.to(device)

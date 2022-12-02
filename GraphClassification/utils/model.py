@@ -98,13 +98,16 @@ def select_model(args, num_ROI_features, num_used_features, adjacencies, labels)
     return model
         
 def select_optimizer(args, model):
-    optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+    if args.model != 'svm':
+        optimizer = optim.Adam(model.parameters(), lr=args.lr, weight_decay=args.weight_decay)
+    else:
+        optimizer = None
     
     return optimizer
 
 def select_trainer(args, device, model, optimizer, data_loader_train, data_loader_test, adjacencies):
     if args.model == 'svm':
-        trainer = SVM_Trainer(args, device, model, optimizer, data_loader_train, data_loader_test)
+        trainer = SVM_Trainer(args, device, model, data_loader_train, data_loader_test)
     elif args.model == 'mlp':
         trainer = MLP_Trainer(args, device, model, optimizer, data_loader_train, data_loader_test, data_loader_test)
     elif args.model == 'gcn' or args.model == 'gat' or args.model == 'gdc':

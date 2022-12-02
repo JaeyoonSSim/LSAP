@@ -21,7 +21,7 @@ class SVM_Trainer:
     def test(self):
         tl, ta, tac, tpr, tsp, tse, f1s = [[] for _ in range(7)]
 
-        for adj, feature, label in self.test_loader:
+        for adjacency, feature, label in self.test_loader:
             output = self.network.predict(feature)
             output = torch.FloatTensor(encode_onehot(output))
 
@@ -46,19 +46,17 @@ class SVM_Trainer:
             tse.append(se.item())
             f1s.append(f1.item())
 
-        return np.mean(tl), np.mean(ta), np.mean(tac), np.mean(tpr), np.mean(tsp), np.mean(tse), np.mean(f1s)
+        return np.mean(tl), np.mean(ta), np.mean(tac), np.mean(tpr), np.mean(tsp), np.mean(tse), np.mean(f1s), None
 
 
 class MLP_Trainer:
-    def __init__(self, args, device, network, train_loader, valid_loader, test_loader):
+    def __init__(self, args, device, network, optimizer, train_loader, valid_loader, test_loader):
         self.args = args
         self.network = network
         self.train_loader = train_loader
         self.valid_loader = valid_loader
         self.test_loader = test_loader
-        self.optimizer = optim.Adam(self.network.parameters(), 
-                                    lr=self.args.lr,
-                                    weight_decay=self.args.weight_decay)
+        self.optimizer = optimizer
         
         if torch.cuda.is_available():
             self.network = self.network.to(device)
@@ -95,7 +93,7 @@ class MLP_Trainer:
 
             self.network.eval()
 
-    def test(self, epoch):
+    def test(self):
         tl, ta, tac, tpr, tsp, tse, f1s = [[] for _ in range(7)]
 
         self.network.eval()
@@ -124,20 +122,18 @@ class MLP_Trainer:
             tse.append(se.item())
             f1s.append(f1.item())
 
-        return np.mean(tl), np.mean(ta), np.mean(tac), np.mean(tpr), np.mean(tsp), np.mean(tse), np.mean(f1s)
+        return np.mean(tl), np.mean(ta), np.mean(tac), np.mean(tpr), np.mean(tsp), np.mean(tse), np.mean(f1s), None
 
 
 ### Trainer for 'GCN', 'GAT', 'GDC'
 class GNN_Trainer:
-    def __init__(self, args, device, network, train_loader, valid_loader, test_loader):
+    def __init__(self, args, device, network, optimizer, train_loader, valid_loader, test_loader):
         self.args = args
         self.network = network
         self.train_loader = train_loader
         self.valid_loader = valid_loader
         self.test_loader = test_loader
-        self.optimizer = optim.Adam(self.network.parameters(), 
-                                    lr=self.args.lr,
-                                    weight_decay=self.args.weight_decay)
+        self.optimizer = optimizer
         
         if torch.cuda.is_available():
             self.network = self.network.to(device)
@@ -171,7 +167,7 @@ class GNN_Trainer:
 
             self.network.eval()
 
-    def test(self, epoch):
+    def test(self):
         tl, ta, tac, tpr, tsp, tse, f1s = [[] for _ in range(7)]
 
         self.network.eval()
@@ -200,21 +196,19 @@ class GNN_Trainer:
             tse.append(se.item())
             f1s.append(f1.item())
 
-        return np.mean(tl), np.mean(ta), np.mean(tac), np.mean(tpr), np.mean(tsp), np.mean(tse), np.mean(f1s)
+        return np.mean(tl), np.mean(ta), np.mean(tac), np.mean(tpr), np.mean(tsp), np.mean(tse), np.mean(f1s), None
 
 
 ### Trainer for 'GraphHeat'
 class GraphHeat_Trainer:
-    def __init__(self, args, device, network, train_loader, valid_loader, test_loader, adj_sz):
+    def __init__(self, args, device, network, optimizer, train_loader, valid_loader, test_loader, adj_sz):
         self.args = args
         self.network = network
         self.train_loader = train_loader
         self.valid_loader = valid_loader
         self.test_loader = test_loader
         self.adj_sz = adj_sz
-        self.optimizer = optim.Adam(self.network.parameters(), 
-                                    lr=self.args.lr,
-                                    weight_decay=self.args.weight_decay)
+        self.optimizer = optimizer
 
         if args.use_t_local == 1: 
             self.t = torch.empty(adj_sz).fill_(2.)
@@ -257,7 +251,7 @@ class GraphHeat_Trainer:
 
             self.network.eval()
 
-    def test(self, epoch):
+    def test(self):
         tl, ta, tac, tpr, tsp, tse, f1s = [[] for _ in range(7)]
 
         self.network.eval()
@@ -288,7 +282,7 @@ class GraphHeat_Trainer:
             tse.append(se.item())
             f1s.append(f1.item())
 
-        return np.mean(tl), np.mean(ta), np.mean(tac), np.mean(tpr), np.mean(tsp), np.mean(tse), np.mean(f1s)
+        return np.mean(tl), np.mean(ta), np.mean(tac), np.mean(tpr), np.mean(tsp), np.mean(tse), np.mean(f1s), None
     
 
 ### Trainer for 'Ours'
