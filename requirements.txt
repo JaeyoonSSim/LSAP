@@ -42,13 +42,11 @@ natsort==7.1.1
 nest-asyncio==1.5.5
 networkx==2.8.7
 numexpr==2.8.3
-numpy==1.23.1
+numpy>=1.14.0
 nvidia-ml-py3==7.352.0
 ogb==1.3.5
 opencv-contrib-python==4.6.0.66
-opencv-python==4.6.0
 openpyxl==3.0.10
-outdated==0.0.0
 packaging==21.3
 pandas==1.4.3
 parso==0.8.3
@@ -60,7 +58,7 @@ pip==22.1.2
 ply==3.11
 promise==2.3
 prompt-toolkit==3.0.20
-protobuf==4.21.9
+protobuf>=3.12.0
 psutil==5.9.0
 ptyprocess==0.7.0
 pure-eval==0.2.2
