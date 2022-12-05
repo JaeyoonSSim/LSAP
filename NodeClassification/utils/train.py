@@ -490,17 +490,6 @@ class Exact_Trainer:
             lt.append(loss_train.item())
             at.append(accuracy_train.item())
             
-            # if epoch > 2:
-            #     if lt[-1] > lt[-2] * 5 and self.args.data == 'pubmed':
-            #         print('Epoch: ', best_epoch)
-            #         break
-            #     elif lt[-1] > lt[-2] * 3 and (self.args.data == 'cora' or self.args.data == 'citeseer'):
-            #         print('Epoch: ', best_epoch)
-            #         break
-            #     elif lt[-1] > lt[-2] * 4 and (self.args.data == 'amazon-photo' or self.args.data == 'amazon-com'):
-            #         print('Epoch: ', best_epoch)
-            #         break
-            
             with torch.no_grad():
                 self.scale_update(output, self.X, self.y, heat_kernel, heat_kernel_grad)
             
@@ -718,7 +707,7 @@ class ASAP_Trainer:
                 heat_kernel, heat_kernel_grad = compute_heat_kernel_hermite(self.args, H_n, self.m_her, self.t, self.device)
             elif self.args.polynomial == 2: # Laguerre
                 heat_kernel, heat_kernel_grad = compute_heat_kernel_laguerre(self.args, L_n, self.m_lag, self.t, self.device)
-            
+
             # Use heat kernel instead of adjacency matrix
             output = self.model.forward(self.X, heat_kernel) # Shape: (1, # node, # feature), (1, # node, # node) -> (# node, # class)
             
@@ -728,17 +717,6 @@ class ASAP_Trainer:
             
             lt.append(loss_train.item())
             at.append(accuracy_train.item())
-            
-            #if epoch > 2:
-            #    if lt[-1] > lt[-2] * 5 and self.args.data == 'pubmed':
-            #        print('Epoch: ', best_epoch)
-            #        break
-            #    elif lt[-1] > lt[-2] * 3 and (self.args.data == 'cora' or self.args.data == 'citeseer'):
-            #        print('Epoch: ', best_epoch)
-            #        break
-            #    elif lt[-1] > lt[-2] * 4 and (self.args.data == 'amazon-photo' or self.args.data == 'amazon-com'):
-            #        print('Epoch: ', best_epoch)
-            #        break
             
             if epoch > 2:
                 if lt[-1] > lt[-2] * 10:

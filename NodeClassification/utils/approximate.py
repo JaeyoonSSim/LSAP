@@ -28,11 +28,8 @@ def compute_heat_kernel(args, eigenvalue, eigenvector, t):
     hk_list.append(hk)
     hk_grad_list.append(hk_grad)
     
-    hk_list = torch.stack(hk_list)
-    hk_grad_list = torch.stack(hk_grad_list)
-    
-    hk_list = hk_list.squeeze()
-    hk_grad_list = hk_grad_list.squeeze()
+    hk_list = torch.stack(hk_list).squeeze()
+    hk_grad_list = torch.stack(hk_grad_list).squeeze()
     
     return hk_list, hk_grad_list
 
@@ -95,11 +92,8 @@ def compute_heat_kernel_chebyshev(args, T_n, m, t, b, device):
     hk_list.append(che)
     hk_grad_list.append(che_grad)
             
-    hk_list = torch.stack(hk_list)
-    hk_grad_list = torch.stack(hk_grad_list)
-    
-    hk_list = hk_list.squeeze()
-    hk_grad_list = hk_grad_list.squeeze()
+    hk_list = torch.stack(hk_list).squeeze()
+    hk_grad_list = torch.stack(hk_grad_list).squeeze()
     
     del t, z, ez, deg, ivd
 
@@ -167,12 +161,9 @@ def compute_heat_kernel_hermite(args, H_n, m, t, device):
     
     hk_list.append(her)
     hk_grad_list.append(her_grad)
-    
-    hk_list = torch.stack(hk_list)
-    hk_grad_list = torch.stack(hk_grad_list)
 
-    hk_list = hk_list.squeeze()
-    hk_grad_list = hk_grad_list.squeeze()
+    hk_list = torch.stack(hk_list).squeeze()
+    hk_grad_list = torch.stack(hk_grad_list).squeeze()
     
     del t, z, ez, deg
     
@@ -234,11 +225,8 @@ def compute_heat_kernel_laguerre(args, L_n, m, t, device):
     hk_list.append(lag)
     hk_grad_list.append(lag_grad)
         
-    hk_list = torch.stack(hk_list)
-    hk_grad_list = torch.stack(hk_grad_list)
-    
-    hk_list = hk_list.squeeze()
-    hk_grad_list = hk_grad_list.squeeze()
+    hk_list = torch.stack(hk_list).squeeze()
+    hk_grad_list = torch.stack(hk_grad_list).squeeze()
     
     del t, deg
     
