@@ -1,2 +1,2 @@
-# ASAP_v1
-Learning Adaptive Heat Kernel Convolution on Graphs and Its Approximations
+# LSAP
+[AAAI 2024] Learning to Approximate Adaptive Kernel Convolution on Graphs
